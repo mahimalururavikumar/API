@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+    <div class="flex justify-center text-center min-h-screen bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+        <div class="mt-44 text-center bg-white bg-opacity-10 p-8 rounded-lg shadow-lg backdrop-blur-md w-full max-w-md h-fit">
+            <h1 class="text-3xl font-bold text-center mb-6">Weather App</h1>
+            <form action="/whetherForCity" method="post" class="space-y-4">
+                <input type="text" name="city" placeholder="Enter City Name"
+                    class="w-full px-4 py-2 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    required />
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white py-2 rounded-lg font-semibold">
+                    Search
+                </button>
+            </form>
+
+            <!-- Display Weather Data -->
+            <% if (weatherData) { %>
+                <div class="mt-6 space-y-4">
+                    <p class="text-lg font-medium">City: <%= weatherData.city %>
+                    </p>
+                    <p class="text-lg font-medium">Temperature: <%= weatherData.temperature %>°C</p>
+                    <p class="text-lg font-medium">Humidity: <%= weatherData.humidity %>%</p>
+                    <p class="text-lg font-medium">Description: <%= weatherData.description %>
+                    </p>
+                    <p class="text-lg font-medium">Wind Speed: <%= weatherData.windSpeed %> km/h</p>
+                </div>
+                <% } %>
+
+                    <!-- Display Errors -->
+                    <% if (error) { %>
+                        <p class="mt-6 text-red-500 text-center">
+                            <%= error %> Please Enter Only cities Name
+                        </p>
+                        <% } %>
+        </div>
+    </div>
+    <%- include('partials/footer') %>

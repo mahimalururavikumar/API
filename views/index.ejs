@@ -1,0 +1,87 @@
+<%- include('partials/header') %>
+<div class="min-h-screen bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 max-w-5xl mx-auto">
+        <!-- News Section -->
+        <section class="bg-gradient-to-r from-sky-100 to-blue-200 rounded-lg shadow-md p-8 w-72 cursor-pointer"
+        onclick="window.location.href='/news'">
+            <h2 class="font-bold text-xl mb-4">News</h2>
+            <ul>
+                <li class="text-gray-800 hover:text-blue-500">Andhra Pradesh News</li>
+                <li class="text-gray-800 hover:text-blue-500">from Last two days</li>
+            </ul>
+        </section>
+
+        <!-- Weather Section -->
+        <section id="weather" class="bg-gradient-to-r from-orange-100 to-yellow-200 rounded-lg shadow-md p-8 w-72 cursor-pointer"
+        onclick="window.location.href='/findweather'">
+            <h2 class="font-bold text-xl mb-4">Weather</h2>
+            <div id="weather-info">
+                <p class="text-gray-800">Fetching weather data...</p>
+            </div>
+        </section>
+
+        <!-- Map Section -->
+        <section class="bg-gray-100 rounded-lg shadow-md p-8 w-72"
+        onclick="window.location.href='/map'">
+
+            <h2 class="font-bold text-xl mb-4">Map</h2>
+            <p>Map integration coming soon!</p>
+        </section>
+
+        <!-- Movies Section -->
+        <section class="bg-gradient-to-r from-purple-100 to-pink-200 rounded-lg shadow-md p-8 w-72">
+            <h2 class="font-bold text-xl mb-4">Movies</h2>
+            <ul>
+                <li class="text-gray-800 hover:text-pink-500">Movie title 1</li>
+                <li class="text-gray-800 hover:text-pink-500">Movie title 2</li>
+            </ul>
+        </section>
+    </div>
+</div>
+    <!-- Client-Side Script -->
+    <script>
+        navigator.geolocation.getCurrentPosition(async (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+        
+                try {
+                    const response = await fetch(`/weather?lat=${latitude}&lon=${longitude}`);
+                    const data = await response.json();
+        
+                    const weatherInfo = document.getElementById("weather-info");
+                    if (data.success) {
+                        weatherInfo.innerHTML = `
+                            <p class="text-gray-800">City: ${data.weather.city}</p>
+                            <p class="text-gray-800">Temperature: ${data.weather.temp}°C</p>
+                            <p class="text-gray-800">Condition: ${data.weather.description}</p>
+                        `;
+                    } else {
+                        weatherInfo.innerHTML = `<p class="text-gray-800">Error: ${data.message}</p>`;
+                    }
+                } catch (error) {
+                    console.error("Error fetching weather data:", error);
+                    document.getElementById("weather-info").innerText = "Failed to fetch weather data.";
+                }
+            },
+            (error) => {
+                const weatherInfo = document.getElementById("weather-info");
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        weatherInfo.innerText = "Location access denied by user(you).";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        weatherInfo.innerText = "Location information is unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        weatherInfo.innerText = "The request to get user location timed out.";
+                        break;
+                    default:
+                        weatherInfo.innerText = "An unknown error occurred.";
+                        break;
+                }
+                console.error("Geolocation error:", error);
+            }
+        );
+        
+    </script>
+<%- include('partials/footer') %>

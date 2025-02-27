@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="flex justify-center text-center min-h-screen bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+    <div class="mt-10 text-center bg-white bg-opacity-10 p-8 rounded-lg shadow-lg backdrop-blur-md w-full max-w-md h-fit">
+        <div class="mb-6 bg-white p-2 rounded-md w-fit ml-40">
+            <a href="/" class="text-gray-600 text-lg font-semibold hover:underline">HOME</a>
+        </div>
+
+        <% if (map && map.results && map.results.length > 0) { %>
+            <h3 class="text-lg font-semibold mb-4">Map for: <%= map.results[0].formatted %></h3>
+            <div id="map" style="height: 400px; width: 100%;"></div>
+
+            <script>
+                // Check if geolocation is available in the browser
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+
+                        // Initialize the map with the user's current location
+                        var map = L.map('map').setView([lat, lng], 13);
+
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+
+                        // Add a marker at the user's current location
+                        L.marker([lat, lng]).addTo(map)
+                            .bindPopup('You are here')
+                            .openPopup();
+                    }, function(error) {
+                        alert('Unable to retrieve your location: ' + error.message);
+                    });
+                } else {
+                    alert('Geolocation is not supported by this browser.');
+                }
+            </script>
+        <% } else { %>
+            <p class="text-gray-600">No map data available.</p>
+        <% } %>
+
+    </div>
+</div>
+
+<%- include('partials/footer') %>
